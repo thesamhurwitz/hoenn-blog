@@ -1,6 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
-import { Post } from '@prisma/client';
+import { Post, Prisma } from '@prisma/client';
 import { CreatePostDto } from './dto/create-post.dto';
 
 @Injectable()
@@ -40,19 +44,29 @@ export class PostsService {
   }
 
   async create(createPostDto: CreatePostDto): Promise<Post> {
-    return this.prisma.post.create({
-      data: {
-        content: createPostDto.content,
-        title: createPostDto.title,
-        author: {
-          connect: {
-            id: createPostDto.author,
+    try {
+      return await this.prisma.post.create({
+        data: {
+          content: createPostDto.content,
+          title: createPostDto.title,
+          author: {
+            connect: {
+              id: createPostDto.author,
+            },
           },
         },
-      },
-      include: {
-        author: true,
-      },
-    });
+        include: {
+          author: true,
+        },
+      });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2025') {
+          throw new BadRequestException('User with such id does not exist.');
+        }
+      }
+
+      throw e;
+    }
   }
 }

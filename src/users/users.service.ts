@@ -1,8 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
-import { User } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
 import { CreateUserDto } from './dto/create-user.dto';
-import { DeleteUserDto } from './dto/delete-user.dto';
 import { PatchUserDto } from './dto/patch-user.dto';
 
 @Injectable()
@@ -39,39 +42,83 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    return this.prisma.user.create({
-      data: {
-        username: createUserDto.username,
-        email: createUserDto.email,
-        profile: createUserDto.bio
-          ? {
+    try {
+      return await this.prisma.user.create({
+        data: {
+          username: createUserDto.username,
+          email: createUserDto.email,
+          profile: createUserDto.bio
+            ? {
+                create: {
+                  bio: createUserDto.bio,
+                },
+              }
+            : undefined,
+        },
+      });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2002') {
+          throw new BadRequestException(
+            'User with such username or email already exists.',
+          );
+        }
+      }
+
+      throw e;
+    }
+  }
+
+  async patch(id: number, patchUserDto: PatchUserDto): Promise<User> {
+    try {
+      return await this.prisma.user.update({
+        where: {
+          id,
+        },
+        data: {
+          username: patchUserDto.username,
+          email: patchUserDto.email,
+          profile: {
+            upsert: {
               create: {
-                bio: createUserDto.bio,
+                bio: patchUserDto.bio,
               },
-            }
-          : undefined,
-      },
-    });
+              update: {
+                bio: patchUserDto.bio,
+              },
+            },
+          },
+        },
+        include: {
+          profile: true,
+        },
+      });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2025') {
+          throw new BadRequestException('User with such id does not exist.');
+        }
+      }
+
+      throw e;
+    }
   }
 
-  async patch(patchUserDto: PatchUserDto): Promise<User> {
-    return this.prisma.user.update({
-      where: {
-        username: patchUserDto.username,
-      },
-      data: {
-        ...patchUserDto,
-      },
-    });
-  }
+  async delete(id: number): Promise<User> {
+    try {
+      return await this.prisma.user.delete({
+        where: {
+          id,
+        },
+      });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2025') {
+          throw new BadRequestException('User with such id does not exist.');
+        }
+      }
 
-  async delete(deleteUserDto: DeleteUserDto): Promise<User> {
-    return this.prisma.user.delete({
-      where: {
-        username:
-          'username' in deleteUserDto ? deleteUserDto.username : undefined,
-        id: 'id' in deleteUserDto ? deleteUserDto.id : undefined,
-      },
-    });
+      throw e;
+    }
   }
 }

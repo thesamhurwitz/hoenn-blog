@@ -1,7 +1,17 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { User as UserModel } from '@prisma/client';
+import { FindAllQuery } from 'src/common/query/find-all.query';
 import { CreateUserDto } from './dto/create-user.dto';
-import { DeleteUserDto } from './dto/delete-user.dto';
 import { PatchUserDto } from './dto/patch-user.dto';
 import { UsersService } from './users.service';
 
@@ -10,13 +20,13 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  async findAll(@Query() { take, skip }): Promise<UserModel[]> {
+  async findAll(@Query() { take, skip }: FindAllQuery): Promise<UserModel[]> {
     return this.usersService.findAll({ take, skip });
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<UserModel> {
-    return this.usersService.findOne(parseInt(id));
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<UserModel> {
+    return this.usersService.findOne(id);
   }
 
   @Post()
@@ -24,13 +34,16 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
-  @Patch()
-  async patch(@Body() patchUserDto: PatchUserDto): Promise<UserModel> {
-    return this.usersService.patch(patchUserDto);
+  @Patch(':id')
+  async patch(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() patchUserDto: PatchUserDto,
+  ): Promise<UserModel> {
+    return this.usersService.patch(id, patchUserDto);
   }
 
-  @Delete()
-  async delete(@Body() deleteUserDto: DeleteUserDto): Promise<UserModel> {
-    return this.usersService.delete(deleteUserDto);
+  @Delete(':id')
+  async delete(@Param('id', ParseIntPipe) id: number): Promise<UserModel> {
+    return this.usersService.delete(id);
   }
 }
