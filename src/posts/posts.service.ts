@@ -6,6 +6,7 @@ import {
 import { PrismaService } from 'src/prisma.service';
 import { Post, Prisma } from '@prisma/client';
 import { CreatePostDto } from './dto/create-post.dto';
+import { PatchPostDto } from './dto/patch-post.dto';
 
 @Injectable()
 export class PostsService {
@@ -99,6 +100,68 @@ export class PostsService {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
           throw new BadRequestException('User with such id does not exist.');
+        }
+      }
+
+      throw e;
+    }
+  }
+
+  async patch(id: number, patchPostDto: PatchPostDto) {
+    try {
+      return await this.prisma.post.update({
+        where: {
+          id,
+        },
+        data: {
+          title: patchPostDto.title,
+          content: patchPostDto.content,
+          published: patchPostDto.published,
+          author: patchPostDto.author
+            ? {
+                connect: {
+                  id: patchPostDto.author,
+                },
+              }
+            : undefined,
+        },
+        select: {
+          id: true,
+          title: true,
+          published: true,
+          createdAt: true,
+          updatedAt: true,
+          author: {
+            select: {
+              id: true,
+              username: true,
+              email: true,
+            },
+          },
+        },
+      });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2025') {
+          throw new BadRequestException('User with such id does not exist.');
+        }
+      }
+
+      throw e;
+    }
+  }
+
+  async delete(id: number) {
+    try {
+      return await this.prisma.post.delete({
+        where: {
+          id,
+        },
+      });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2025') {
+          throw new BadRequestException('Post with such id does not exist.');
         }
       }
 
