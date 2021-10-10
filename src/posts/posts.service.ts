@@ -11,13 +11,21 @@ import { CreatePostDto } from './dto/create-post.dto';
 export class PostsService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll(params: { skip?: number; take?: number }): Promise<Post[]> {
+  async findAll(params: { skip?: number; take?: number }) {
     const { skip, take } = params;
 
     return this.prisma.post.findMany({
       skip,
       take,
-      include: {
+      orderBy: {
+        createdAt: 'desc',
+      },
+      select: {
+        id: true,
+        title: true,
+        createdAt: true,
+        updatedAt: true,
+        published: true,
         author: {
           select: {
             id: true,
@@ -29,10 +37,27 @@ export class PostsService {
     });
   }
 
-  async findOne(id: number): Promise<Post> {
+  async findOne(id: number) {
     const post = await this.prisma.post.findUnique({
       where: {
         id,
+      },
+      select: {
+        id: true,
+        title: true,
+        createdAt: true,
+        updatedAt: true,
+        published: true,
+        content: true,
+        author: {
+          select: {
+            id: true,
+            username: true,
+            email: true,
+            role: true,
+            profile: true,
+          },
+        },
       },
     });
 
@@ -43,7 +68,7 @@ export class PostsService {
     return post;
   }
 
-  async create(createPostDto: CreatePostDto): Promise<Post> {
+  async create(createPostDto: CreatePostDto) {
     try {
       return await this.prisma.post.create({
         data: {
@@ -55,8 +80,19 @@ export class PostsService {
             },
           },
         },
-        include: {
-          author: true,
+        select: {
+          id: true,
+          title: true,
+          published: true,
+          createdAt: true,
+          updatedAt: true,
+          author: {
+            select: {
+              id: true,
+              username: true,
+              email: true,
+            },
+          },
         },
       });
     } catch (e) {

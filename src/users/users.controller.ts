@@ -20,17 +20,17 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  async findAll(@Query() { take, skip }: FindAllQuery): Promise<UserModel[]> {
+  async findAll(@Query() { take, skip }: FindAllQuery) {
     return this.usersService.findAll({ take, skip });
   }
 
   @Get(':id')
-  async findOne(@Param('id', ParseIntPipe) id: number): Promise<UserModel> {
+  async findOne(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.findOne(id);
   }
 
   @Post()
-  async create(@Body() createUserDto: CreateUserDto): Promise<UserModel> {
+  async create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
@@ -38,12 +38,12 @@ export class UsersController {
   async patch(
     @Param('id', ParseIntPipe) id: number,
     @Body() patchUserDto: PatchUserDto,
-  ): Promise<UserModel> {
+  ) {
     return this.usersService.patch(id, patchUserDto);
   }
 
   @Delete(':id')
-  async delete(@Param('id', ParseIntPipe) id: number): Promise<UserModel> {
+  async delete(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.delete(id);
   }
 }

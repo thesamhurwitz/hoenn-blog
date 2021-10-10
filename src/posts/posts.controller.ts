@@ -17,17 +17,17 @@ export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Get()
-  async findAll(@Query() { take, skip }: FindAllQuery): Promise<PostModel[]> {
+  async findAll(@Query() { take, skip }: FindAllQuery) {
     return this.postsService.findAll({ take, skip });
   }
 
   @Get('/:id')
-  async findOne(@Param('id', ParseIntPipe) id: number): Promise<PostModel> {
+  async findOne(@Param('id', ParseIntPipe) id: number) {
     return this.postsService.findOne(id);
   }
 
   @Post()
-  async create(@Body() createPostDto: CreatePostDto): Promise<PostModel> {
+  async create(@Body() createPostDto: CreatePostDto) {
     return this.postsService.create(createPostDto);
   }
 }

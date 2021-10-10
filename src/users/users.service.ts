@@ -12,25 +12,38 @@ import { PatchUserDto } from './dto/patch-user.dto';
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll(params: { skip?: number; take?: number }): Promise<User[]> {
+  async findAll(params: { skip?: number; take?: number }) {
     const { skip, take } = params;
 
     return this.prisma.user.findMany({
       skip,
       take,
-      include: {
-        profile: true,
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        createdAt: true,
+        updatedAt: true,
       },
     });
   }
 
-  async findOne(id: number): Promise<User> {
+  async findOne(id: number) {
     const user = await this.prisma.user.findUnique({
       where: {
         id,
       },
-      include: {
-        profile: true,
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        createdAt: true,
+        updatedAt: true,
+        profile: {
+          select: {
+            bio: true,
+          },
+        },
       },
     });
 
@@ -41,7 +54,7 @@ export class UsersService {
     return user;
   }
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto) {
     try {
       return await this.prisma.user.create({
         data: {
@@ -54,6 +67,18 @@ export class UsersService {
                 },
               }
             : undefined,
+        },
+        select: {
+          id: true,
+          username: true,
+          email: true,
+          createdAt: true,
+          updatedAt: true,
+          profile: {
+            select: {
+              bio: true,
+            },
+          },
         },
       });
     } catch (e) {
@@ -69,7 +94,7 @@ export class UsersService {
     }
   }
 
-  async patch(id: number, patchUserDto: PatchUserDto): Promise<User> {
+  async patch(id: number, patchUserDto: PatchUserDto) {
     try {
       return await this.prisma.user.update({
         where: {
@@ -89,8 +114,17 @@ export class UsersService {
             },
           },
         },
-        include: {
-          profile: true,
+        select: {
+          id: true,
+          username: true,
+          email: true,
+          createdAt: true,
+          updatedAt: true,
+          profile: {
+            select: {
+              bio: true,
+            },
+          },
         },
       });
     } catch (e) {
@@ -104,7 +138,7 @@ export class UsersService {
     }
   }
 
-  async delete(id: number): Promise<User> {
+  async delete(id: number) {
     try {
       return await this.prisma.user.delete({
         where: {
