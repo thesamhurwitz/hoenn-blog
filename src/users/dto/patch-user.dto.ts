@@ -29,6 +29,7 @@ export class PatchUserDto {
 
   @ApiProperty({
     maxLength: 150,
+    required: false,
   })
   @IsString()
   @MaxLength(150)
