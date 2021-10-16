@@ -27,11 +27,12 @@ export class PostsService {
         createdAt: true,
         updatedAt: true,
         published: true,
-        author: {
+        publisher: {
           select: {
             id: true,
-            username: true,
-            email: true,
+            name: true,
+            displayName: true,
+            type: true,
           },
         },
       },
@@ -50,13 +51,12 @@ export class PostsService {
         updatedAt: true,
         published: true,
         content: true,
-        author: {
+        publisher: {
           select: {
             id: true,
-            username: true,
-            email: true,
-            role: true,
-            profile: true,
+            name: true,
+            displayName: true,
+            type: true,
           },
         },
       },
@@ -75,9 +75,9 @@ export class PostsService {
         data: {
           content: createPostDto.content,
           title: createPostDto.title,
-          author: {
+          publisher: {
             connect: {
-              id: createPostDto.author,
+              name: createPostDto.publisher,
             },
           },
         },
@@ -87,11 +87,12 @@ export class PostsService {
           published: true,
           createdAt: true,
           updatedAt: true,
-          author: {
+          publisher: {
             select: {
               id: true,
-              username: true,
-              email: true,
+              name: true,
+              displayName: true,
+              type: true,
             },
           },
         },
@@ -99,7 +100,9 @@ export class PostsService {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
-          throw new BadRequestException('User with such id does not exist.');
+          throw new BadRequestException(
+            'Publisher with such id does not exist.',
+          );
         }
       }
 
@@ -117,10 +120,10 @@ export class PostsService {
           title: patchPostDto.title,
           content: patchPostDto.content,
           published: patchPostDto.published,
-          author: patchPostDto.author
+          publisher: patchPostDto.publisher
             ? {
                 connect: {
-                  id: patchPostDto.author,
+                  name: patchPostDto.publisher,
                 },
               }
             : undefined,
@@ -131,11 +134,12 @@ export class PostsService {
           published: true,
           createdAt: true,
           updatedAt: true,
-          author: {
+          publisher: {
             select: {
               id: true,
-              username: true,
-              email: true,
+              name: true,
+              displayName: true,
+              type: true,
             },
           },
         },
@@ -143,7 +147,9 @@ export class PostsService {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
-          throw new BadRequestException('User with such id does not exist.');
+          throw new BadRequestException(
+            'Publisher with such id does not exist.',
+          );
         }
       }
 

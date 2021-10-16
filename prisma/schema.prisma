@@ -15,44 +15,74 @@ model User {
   email    String   @unique
   username String   @unique
   role     Role     @default(USER)
-  posts    Post[]
   profile  Profile?
-  
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
+
+  publishers Publisher[] @relation(references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([username])
 }
 
-model Profile {
-  id     Int    @id @default(autoincrement())
-  bio    String
-  user   User   @relation(fields: [userId], references: [id])
-  userId Int
+model Publisher {
+  id          Int           @id @default(autoincrement())
+  name        String        @unique
+  displayName String
+  type        PublisherType @default(PERSONAL)
+
+  users User[] @relation(references: [id])
+
+  posts Post[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
 }
 
 model Post {
-  id         Int        @id @default(autoincrement())
-  title      String
-  published  Boolean    @default(false)
+  id        Int     @id @default(autoincrement())
+  title     String
+  published Boolean @default(false)
 
   content String
 
-  author     User       @relation(fields: [authorId], references: [id])
-  authorId   Int
+  publisher Publisher @relation(fields: [publisherId], references: [id])
+  publisherId  Int
 
   categories Category[] @relation(references: [id])
-  
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([title])
 }
 
 model Category {
-  id    Int    @id @default(autoincrement())
-  name  String
+  id   Int    @id @default(autoincrement())
+  name String
 
   posts Post[] @relation(references: [id])
+
+  @@index([name])
+}
+
+model Profile {
+  id  Int    @id @default(autoincrement())
+  bio String
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int  @unique
 }
 
 enum Role {
   USER
+  PUBLISHER
   ADMIN
+}
+
+enum PublisherType {
+  PERSONAL
+  ORGANIZATION
 }

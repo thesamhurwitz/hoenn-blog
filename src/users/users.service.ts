@@ -7,6 +7,7 @@ import { PrismaService } from 'src/prisma.service';
 import { Prisma, User } from '@prisma/client';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PatchUserDto } from './dto/patch-user.dto';
+import { FindAllQuery } from 'src/common/query/find-all.query';
 
 @Injectable()
 export class UsersService {
@@ -28,10 +29,10 @@ export class UsersService {
     });
   }
 
-  async findOne(id: number) {
+  async findOne(username: string) {
     const user = await this.prisma.user.findUnique({
       where: {
-        id,
+        username,
       },
       select: {
         id: true,
@@ -94,14 +95,13 @@ export class UsersService {
     }
   }
 
-  async patch(id: number, patchUserDto: PatchUserDto) {
+  async patch(username: string, patchUserDto: PatchUserDto) {
     try {
       return await this.prisma.user.update({
         where: {
-          id,
+          username,
         },
         data: {
-          username: patchUserDto.username,
           email: patchUserDto.email,
           profile: {
             upsert: {
@@ -130,7 +130,12 @@ export class UsersService {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
-          throw new BadRequestException('User with such id does not exist.');
+          throw new BadRequestException(
+            'User with such username does not exist.',
+          );
+        }
+        if (e.code === 'P2002') {
+          throw new BadRequestException('User with such email already exists.');
         }
       }
 
@@ -138,21 +143,86 @@ export class UsersService {
     }
   }
 
-  async delete(id: number) {
+  async delete(username: string) {
     try {
       return await this.prisma.user.delete({
         where: {
-          id,
+          username,
         },
       });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
-          throw new BadRequestException('User with such id does not exist.');
+          throw new BadRequestException(
+            'User with such username does not exist.',
+          );
         }
       }
 
       throw e;
     }
+  }
+
+  async findAllUserPublishers(username: string, { take, skip }: FindAllQuery) {
+    try {
+      return (
+        await this.prisma.user.findUnique({
+          where: {
+            username,
+          },
+          select: {
+            publishers: {
+              select: {
+                id: true,
+                name: true,
+                type: true,
+                displayName: true,
+                createdAt: true,
+                updatedAt: true,
+              },
+              skip,
+              take,
+            },
+          },
+        })
+      ).publishers;
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2025') {
+          throw new BadRequestException(
+            'User with such username does not exist.',
+          );
+        }
+      }
+
+      throw e;
+    }
+  }
+
+  async checkUserMembership(username: string, publisherName: string) {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        username,
+        publishers: {
+          some: {
+            name: publisherName,
+          },
+        },
+      },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException();
+    }
+
+    return user;
   }
 }

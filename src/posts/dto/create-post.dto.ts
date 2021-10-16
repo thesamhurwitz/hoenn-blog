@@ -16,7 +16,6 @@ export class CreatePostDto {
   readonly content: string;
 
   @ApiProperty()
-  @IsInt()
-  @Type(() => Number)
-  readonly author: number;
+  @IsString()
+  readonly publisher: string;
 }

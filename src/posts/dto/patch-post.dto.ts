@@ -36,8 +36,7 @@ export class PatchPostDto {
   @ApiProperty({
     required: false,
   })
-  @IsInt()
-  @Type(() => Number)
+  @IsString()
   @IsOptional()
-  readonly author?: number;
+  readonly publisher?: string;
 }

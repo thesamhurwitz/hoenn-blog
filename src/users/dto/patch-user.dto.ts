@@ -1,23 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsEmail,
-  IsOptional,
-  IsString,
-  Length,
-  MaxLength,
-} from 'class-validator';
+import { IsEmail, IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class PatchUserDto {
-  @ApiProperty({
-    minLength: 3,
-    maxLength: 25,
-    required: false,
-  })
-  @IsString()
-  @Length(3, 25)
-  @IsOptional()
-  readonly username?: string;
-
   @ApiProperty({
     format: 'email',
     required: false,

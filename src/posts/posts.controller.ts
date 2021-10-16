@@ -9,8 +9,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { Post as PostModel } from '@prisma/client';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { FindAllQuery } from 'src/common/query/find-all.query';
 import { CreatePostDto } from './dto/create-post.dto';
 import { PatchPostDto } from './dto/patch-post.dto';
