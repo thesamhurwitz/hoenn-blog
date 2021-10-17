@@ -25,8 +25,11 @@ export class PostsController {
     name: 'pagination',
     type: FindAllQuery,
   })
-  async findAll(@Query() { take, skip }: FindAllQuery) {
-    return this.postsService.findAll({ take, skip });
+  async findAll(
+    @Query() { take, skip }: FindAllQuery,
+    @Query('category') category?: string,
+  ) {
+    return this.postsService.findAll({ take, skip }, category);
   }
 
   @Get('/:id')

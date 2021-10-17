@@ -61,11 +61,12 @@ model Post {
 
 model Category {
   id   Int    @id @default(autoincrement())
+  slug String @unique
   name String
 
   posts Post[] @relation(references: [id])
 
-  @@index([name])
+  @@index([slug])
 }
 
 model Profile {

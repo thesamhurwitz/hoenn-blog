@@ -39,4 +39,11 @@ export class PatchPostDto {
   @IsString()
   @IsOptional()
   readonly publisher?: string;
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsOptional()
+  @IsString({ each: true })
+  readonly categories?: string[];
 }

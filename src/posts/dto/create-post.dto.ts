@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import { IsInt, IsString, Length } from 'class-validator';
+import { IsOptional, IsString, Length } from 'class-validator';
 
 export class CreatePostDto {
   @ApiProperty({
@@ -18,4 +17,9 @@ export class CreatePostDto {
   @ApiProperty()
   @IsString()
   readonly publisher: string;
+
+  @ApiProperty()
+  @IsString({ each: true })
+  @IsOptional()
+  readonly categories?: string[];
 }

@@ -12,10 +12,19 @@ import { PatchPostDto } from './dto/patch-post.dto';
 export class PostsService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll(params: { skip?: number; take?: number }) {
+  async findAll(params: { skip?: number; take?: number }, category: string) {
     const { skip, take } = params;
 
     return this.prisma.post.findMany({
+      where: category
+        ? {
+            categories: {
+              some: {
+                slug: category,
+              },
+            },
+          }
+        : undefined,
       skip,
       take,
       orderBy: {
@@ -33,6 +42,12 @@ export class PostsService {
             name: true,
             displayName: true,
             type: true,
+          },
+        },
+        categories: {
+          select: {
+            slug: true,
+            name: true,
           },
         },
       },
@@ -59,6 +74,12 @@ export class PostsService {
             type: true,
           },
         },
+        categories: {
+          select: {
+            slug: true,
+            name: true,
+          },
+        },
       },
     });
 
@@ -80,6 +101,13 @@ export class PostsService {
               name: createPostDto.publisher,
             },
           },
+          categories: createPostDto.categories
+            ? {
+                connect: createPostDto.categories.map((c) => {
+                  return { slug: c };
+                }),
+              }
+            : undefined,
         },
         select: {
           id: true,
@@ -93,6 +121,12 @@ export class PostsService {
               name: true,
               displayName: true,
               type: true,
+            },
+          },
+          categories: {
+            select: {
+              slug: true,
+              name: true,
             },
           },
         },
@@ -127,6 +161,13 @@ export class PostsService {
                 },
               }
             : undefined,
+          categories: patchPostDto.categories
+            ? {
+                connect: patchPostDto.categories.map((c) => {
+                  return { slug: c };
+                }),
+              }
+            : undefined,
         },
         select: {
           id: true,
@@ -140,6 +181,12 @@ export class PostsService {
               name: true,
               displayName: true,
               type: true,
+            },
+          },
+          categories: {
+            select: {
+              slug: true,
+              name: true,
             },
           },
         },
