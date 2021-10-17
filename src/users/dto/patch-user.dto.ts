@@ -1,5 +1,12 @@
+import { Role } from '.prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsOptional, IsString, MaxLength } from 'class-validator';
+import {
+  IsEmail,
+  IsEnum,
+  IsOptional,
+  IsString,
+  MaxLength,
+} from 'class-validator';
 
 export class PatchUserDto {
   @ApiProperty({
@@ -18,4 +25,11 @@ export class PatchUserDto {
   @IsString()
   @MaxLength(150)
   readonly bio?: string;
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsOptional()
+  @IsEnum(Role)
+  readonly role?: Role;
 }

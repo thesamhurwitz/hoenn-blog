@@ -53,6 +53,14 @@ export class PublishersController {
     return this.publishersService.delete(name);
   }
 
+  @Get(':name/posts')
+  async findAllPosts(
+    @Param('name') name: string,
+    @Query() { take, skip }: FindAllQuery,
+  ) {
+    return this.publishersService.findAllPosts(name, { take, skip });
+  }
+
   // Publisher's members
 
   // Get all publisher members

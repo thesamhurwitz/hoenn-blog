@@ -11,12 +11,12 @@ export class PatchPublisherDto {
   @IsOptional()
   @IsString()
   @Length(3, 150)
-  readonly displayName: string;
+  readonly displayName?: string;
 
   @ApiProperty({
     required: false,
   })
   @IsOptional()
   @IsEnum(PublisherType)
-  readonly type: PublisherType;
+  readonly type?: PublisherType;
 }

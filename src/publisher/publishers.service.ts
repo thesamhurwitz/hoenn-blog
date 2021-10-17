@@ -134,6 +134,28 @@ export class PublishersService {
     }
   }
 
+  async findAllPosts(name: string, { take, skip }: FindAllQuery) {
+    return this.prisma.post.findMany({
+      where: {
+        publisher: {
+          name,
+        },
+      },
+      skip,
+      take,
+      orderBy: {
+        createdAt: 'desc',
+      },
+      select: {
+        id: true,
+        title: true,
+        createdAt: true,
+        updatedAt: true,
+        published: true,
+      },
+    });
+  }
+
   async findAllEditors(name: string, { take, skip }: FindAllQuery) {
     try {
       const publisher = await this.prisma.publisher.findUnique({

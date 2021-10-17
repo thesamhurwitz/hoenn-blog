@@ -23,6 +23,7 @@ export class UsersService {
         id: true,
         username: true,
         email: true,
+        role: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -38,6 +39,7 @@ export class UsersService {
         id: true,
         username: true,
         email: true,
+        role: true,
         createdAt: true,
         updatedAt: true,
         profile: {
@@ -73,6 +75,7 @@ export class UsersService {
           id: true,
           username: true,
           email: true,
+          role: true,
           createdAt: true,
           updatedAt: true,
           profile: {
@@ -113,11 +116,13 @@ export class UsersService {
               },
             },
           },
+          role: patchUserDto.role,
         },
         select: {
           id: true,
           username: true,
           email: true,
+          role: true,
           createdAt: true,
           updatedAt: true,
           profile: {
