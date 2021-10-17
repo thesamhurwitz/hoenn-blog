@@ -57,46 +57,46 @@ export class UsersService {
     return user;
   }
 
-  async create(createUserDto: CreateUserDto) {
-    try {
-      return await this.prisma.user.create({
-        data: {
-          username: createUserDto.username,
-          email: createUserDto.email,
-          profile: createUserDto.bio
-            ? {
-                create: {
-                  bio: createUserDto.bio,
-                },
-              }
-            : undefined,
-        },
-        select: {
-          id: true,
-          username: true,
-          email: true,
-          role: true,
-          createdAt: true,
-          updatedAt: true,
-          profile: {
-            select: {
-              bio: true,
-            },
-          },
-        },
-      });
-    } catch (e) {
-      if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        if (e.code === 'P2002') {
-          throw new BadRequestException(
-            'User with such username or email already exists.',
-          );
-        }
-      }
+  // async create(createUserDto: CreateUserDto) {
+  //   try {
+  //     return await this.prisma.user.create({
+  //       data: {
+  //         username: createUserDto.username,
+  //         email: createUserDto.email,
+  //         profile: createUserDto.bio
+  //           ? {
+  //               create: {
+  //                 bio: createUserDto.bio,
+  //               },
+  //             }
+  //           : undefined,
+  //       },
+  //       select: {
+  //         id: true,
+  //         username: true,
+  //         email: true,
+  //         role: true,
+  //         createdAt: true,
+  //         updatedAt: true,
+  //         profile: {
+  //           select: {
+  //             bio: true,
+  //           },
+  //         },
+  //       },
+  //     });
+  //   } catch (e) {
+  //     if (e instanceof Prisma.PrismaClientKnownRequestError) {
+  //       if (e.code === 'P2002') {
+  //         throw new BadRequestException(
+  //           'User with such username or email already exists.',
+  //         );
+  //       }
+  //     }
 
-      throw e;
-    }
-  }
+  //     throw e;
+  //   }
+  // }
 
   async patch(username: string, patchUserDto: PatchUserDto) {
     try {
@@ -153,6 +153,9 @@ export class UsersService {
       return await this.prisma.user.delete({
         where: {
           username,
+        },
+        select: {
+          hash: false,
         },
       });
     } catch (e) {

@@ -17,6 +17,8 @@ model User {
   role     Role     @default(USER)
   profile  Profile?
 
+  hash String
+
   publishers Publisher[] @relation(references: [id])
 
   createdAt DateTime @default(now())

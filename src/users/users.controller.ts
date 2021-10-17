@@ -31,10 +31,10 @@ export class UsersController {
     return this.usersService.findOne(username);
   }
 
-  @Post()
-  async create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
-  }
+  // @Post()
+  // async create(@Body() createUserDto: CreateUserDto) {
+  //   return this.usersService.create(createUserDto);
+  // }
 
   @Patch(':username')
   async patch(
