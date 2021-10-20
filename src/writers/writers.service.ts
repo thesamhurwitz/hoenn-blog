@@ -5,19 +5,19 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { Prisma } from '@prisma/client';
-import { CreatePublisherDto } from './dto/create-publisher.dto';
-import { PatchPublisherDto } from './dto/patch-publisher.dto';
+import { CreateWriterDto } from './dto/create-writer.dto';
+import { PatchWriterDto } from './dto/patch-writer.dto';
 import { FindAllQuery } from 'src/common/query/find-all.query';
-import { PutPublisherEditorDto } from './dto/put-editor.dto';
+import { PutWriterEditorDto } from './dto/put-editor.dto';
 
 @Injectable()
-export class PublishersService {
+export class WritersService {
   constructor(private prisma: PrismaService) {}
 
   async findAll(params: { skip?: number; take?: number }) {
     const { skip, take } = params;
 
-    return this.prisma.publisher.findMany({
+    return this.prisma.writer.findMany({
       skip,
       take,
       select: {
@@ -32,7 +32,7 @@ export class PublishersService {
   }
 
   async findOne(name: string) {
-    const publisher = await this.prisma.publisher.findUnique({
+    const writer = await this.prisma.writer.findUnique({
       where: {
         name,
       },
@@ -46,19 +46,19 @@ export class PublishersService {
       },
     });
 
-    if (!publisher) {
+    if (!writer) {
       throw new NotFoundException();
     }
 
-    return publisher;
+    return writer;
   }
 
-  async create(createPublisherDto: CreatePublisherDto) {
+  async create(createWriterDto: CreateWriterDto) {
     try {
-      return await this.prisma.publisher.create({
+      return await this.prisma.writer.create({
         data: {
-          name: createPublisherDto.name,
-          displayName: createPublisherDto.displayName,
+          name: createWriterDto.name,
+          displayName: createWriterDto.displayName,
         },
         select: {
           id: true,
@@ -73,7 +73,7 @@ export class PublishersService {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
           throw new BadRequestException(
-            'Publisher with such name already exists.',
+            'Writer with such name already exists.',
           );
         }
       }
@@ -82,15 +82,15 @@ export class PublishersService {
     }
   }
 
-  async patch(name: string, patchPublisherDto: PatchPublisherDto) {
+  async patch(name: string, patchWriterDto: PatchWriterDto) {
     try {
-      return await this.prisma.publisher.update({
+      return await this.prisma.writer.update({
         where: {
           name,
         },
         data: {
-          displayName: patchPublisherDto.displayName,
-          type: patchPublisherDto.type,
+          displayName: patchWriterDto.displayName,
+          type: patchWriterDto.type,
         },
         select: {
           id: true,
@@ -105,7 +105,7 @@ export class PublishersService {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
           throw new BadRequestException(
-            'Publisher with such name does not exist.',
+            'Writer with such name does not exist.',
           );
         }
       }
@@ -116,7 +116,7 @@ export class PublishersService {
 
   async delete(name: string) {
     try {
-      return await this.prisma.publisher.delete({
+      return await this.prisma.writer.delete({
         where: {
           name,
         },
@@ -125,7 +125,7 @@ export class PublishersService {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
           throw new BadRequestException(
-            'Publisher with such name does not exist.',
+            'Writer with such name does not exist.',
           );
         }
       }
@@ -137,7 +137,7 @@ export class PublishersService {
   async findAllPosts(name: string, { take, skip }: FindAllQuery) {
     return this.prisma.post.findMany({
       where: {
-        publisher: {
+        writer: {
           name,
         },
       },
@@ -158,7 +158,7 @@ export class PublishersService {
 
   async findAllEditors(name: string, { take, skip }: FindAllQuery) {
     try {
-      const publisher = await this.prisma.publisher.findUnique({
+      const writer = await this.prisma.writer.findUnique({
         where: {
           name,
         },
@@ -178,16 +178,16 @@ export class PublishersService {
         },
       });
 
-      if (!publisher) {
+      if (!writer) {
         throw new NotFoundException();
       }
 
-      return publisher.users;
+      return writer.users;
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
           throw new BadRequestException(
-            'Publisher with such name does not exist.',
+            'Writer with such name does not exist.',
           );
         }
       }
@@ -197,7 +197,7 @@ export class PublishersService {
   }
 
   async checkUserMembership(name: string, username: string) {
-    const publisher = await this.prisma.publisher.findFirst({
+    const writer = await this.prisma.writer.findFirst({
       where: {
         name,
         users: {
@@ -216,16 +216,16 @@ export class PublishersService {
       },
     });
 
-    if (!publisher) {
+    if (!writer) {
       throw new NotFoundException();
     }
 
-    return publisher;
+    return writer;
   }
 
-  async putEditor(name: string, putEditorDtp: PutPublisherEditorDto) {
+  async putEditor(name: string, putEditorDtp: PutWriterEditorDto) {
     try {
-      await this.prisma.publisher.update({
+      await this.prisma.writer.update({
         where: {
           name,
         },
@@ -246,7 +246,7 @@ export class PublishersService {
         }
         if (e.code === 'P2016') {
           throw new BadRequestException(
-            'Publisher with such name does not exist.',
+            'Writer with such name does not exist.',
           );
         }
       }
@@ -258,7 +258,7 @@ export class PublishersService {
   async deleteEditor(name: string, username: string) {
     // TODO: throw if username didn't exist
     try {
-      await this.prisma.publisher.update({
+      await this.prisma.writer.update({
         where: {
           name,
         },
@@ -274,7 +274,7 @@ export class PublishersService {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
           throw new BadRequestException(
-            'Publisher with such name does not exist.',
+            'Writer with such name does not exist.',
           );
         }
       }

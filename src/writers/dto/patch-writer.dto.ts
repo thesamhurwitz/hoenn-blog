@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsOptional, IsString, Length } from 'class-validator';
-import { PublisherType } from '.prisma/client';
+import { WriterType } from '.prisma/client';
 
-export class PatchPublisherDto {
+export class PatchWriterDto {
   @ApiProperty({
     minLength: 3,
     maxLength: 150,
@@ -17,6 +17,6 @@ export class PatchPublisherDto {
     required: false,
   })
   @IsOptional()
-  @IsEnum(PublisherType)
-  readonly type?: PublisherType;
+  @IsEnum(WriterType)
+  readonly type?: WriterType;
 }

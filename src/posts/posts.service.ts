@@ -36,7 +36,7 @@ export class PostsService {
         createdAt: true,
         updatedAt: true,
         published: true,
-        publisher: {
+        writer: {
           select: {
             id: true,
             name: true,
@@ -66,7 +66,7 @@ export class PostsService {
         updatedAt: true,
         published: true,
         content: true,
-        publisher: {
+        writer: {
           select: {
             id: true,
             name: true,
@@ -96,9 +96,9 @@ export class PostsService {
         data: {
           content: createPostDto.content,
           title: createPostDto.title,
-          publisher: {
+          writer: {
             connect: {
-              name: createPostDto.publisher,
+              name: createPostDto.writer,
             },
           },
           categories: createPostDto.categories
@@ -115,7 +115,7 @@ export class PostsService {
           published: true,
           createdAt: true,
           updatedAt: true,
-          publisher: {
+          writer: {
             select: {
               id: true,
               name: true,
@@ -134,9 +134,7 @@ export class PostsService {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
-          throw new BadRequestException(
-            'Publisher with such id does not exist.',
-          );
+          throw new BadRequestException('Writer with such id does not exist.');
         }
       }
 
@@ -154,10 +152,10 @@ export class PostsService {
           title: patchPostDto.title,
           content: patchPostDto.content,
           published: patchPostDto.published,
-          publisher: patchPostDto.publisher
+          writer: patchPostDto.writer
             ? {
                 connect: {
-                  name: patchPostDto.publisher,
+                  name: patchPostDto.writer,
                 },
               }
             : undefined,
@@ -175,7 +173,7 @@ export class PostsService {
           published: true,
           createdAt: true,
           updatedAt: true,
-          publisher: {
+          writer: {
             select: {
               id: true,
               name: true,
@@ -194,9 +192,7 @@ export class PostsService {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
-          throw new BadRequestException(
-            'Publisher with such id does not exist.',
-          );
+          throw new BadRequestException('Writer with such id does not exist.');
         }
       }
 

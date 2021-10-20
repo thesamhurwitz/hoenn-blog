@@ -9,7 +9,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { SignupDto } from './dto/signup.dto';
-import { JwtAuthGuard } from './guards/jwt-awuth.guard';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 
 @ApiTags('auth')

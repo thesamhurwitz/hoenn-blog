@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, Length } from 'class-validator';
 
-export class CreatePublisherDto {
+export class CreateWriterDto {
   @ApiProperty({
     minLength: 3,
     maxLength: 25,
