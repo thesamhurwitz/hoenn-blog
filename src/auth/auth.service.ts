@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
@@ -8,6 +9,7 @@ import { SignupDto } from './dto/signup.dto';
 import * as bcrypt from 'bcrypt';
 import { Prisma } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
+import { AuthPayload } from './auth-payload';
 
 @Injectable()
 export class AuthService {
@@ -65,6 +67,29 @@ export class AuthService {
     const { hash, ...result } = user;
 
     return result;
+  }
+
+  async getProfile(payload: AuthPayload) {
+    const user = this.prisma.user.findUnique({
+      where: {
+        username: payload.username,
+      },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        role: true,
+        profile: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException();
+    }
+
+    return user;
   }
 
   async getJwtToken(user) {
