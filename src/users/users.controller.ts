@@ -49,18 +49,18 @@ export class UsersController {
     return this.usersService.delete(username);
   }
 
-  // User's publishers
+  // User's writers
 
-  @Get(':username/publishers')
-  async findAllPublishers(
+  @Get(':username/writers')
+  async findAllWriters(
     @Param('username') username: string,
     @Query() { take, skip }: FindAllQuery,
   ) {
-    return this.usersService.findAllUserPublishers(username, { take, skip });
+    return this.usersService.findAllUserWriters(username, { take, skip });
   }
 
-  @Get(':username/publishers/:name')
-  async findOnePublisher(
+  @Get(':username/writers/:name')
+  async findOneWriter(
     @Param('username') username: string,
     @Param('name') name: string,
   ) {

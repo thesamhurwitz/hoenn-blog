@@ -16,7 +16,7 @@ export class CreatePostDto {
 
   @ApiProperty()
   @IsString()
-  readonly publisher: string;
+  readonly writer: string;
 
   @ApiProperty()
   @IsString({ each: true })

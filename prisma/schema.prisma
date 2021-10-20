@@ -19,7 +19,7 @@ model User {
 
   hash String
 
-  publishers Publisher[] @relation(references: [id])
+  writers Writer[] @relation(references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -27,11 +27,11 @@ model User {
   @@index([username])
 }
 
-model Publisher {
+model Writer {
   id          Int           @id @default(autoincrement())
   name        String        @unique
   displayName String
-  type        PublisherType @default(PERSONAL)
+  type        WriterType @default(PERSONAL)
 
   users User[] @relation(references: [id])
 
@@ -50,8 +50,8 @@ model Post {
 
   content String
 
-  publisher Publisher @relation(fields: [publisherId], references: [id])
-  publisherId  Int
+  writer Writer @relation(fields: [writerId], references: [id])
+  writerId  Int
 
   categories Category[] @relation(references: [id])
 
@@ -81,11 +81,11 @@ model Profile {
 
 enum Role {
   USER
-  PUBLISHER
+  WRITER
   ADMIN
 }
 
-enum PublisherType {
+enum WriterType {
   PERSONAL
   ORGANIZATION
 }
