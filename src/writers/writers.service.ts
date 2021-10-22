@@ -72,9 +72,9 @@ export class WritersService {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
-          throw new BadRequestException(
+          throw new BadRequestException([
             'Writer with such name already exists.',
-          );
+          ]);
         }
       }
 
@@ -104,9 +104,9 @@ export class WritersService {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
-          throw new BadRequestException(
+          throw new BadRequestException([
             'Writer with such name does not exist.',
-          );
+          ]);
         }
       }
 
@@ -124,9 +124,9 @@ export class WritersService {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
-          throw new BadRequestException(
+          throw new BadRequestException([
             'Writer with such name does not exist.',
-          );
+          ]);
         }
       }
 
@@ -186,9 +186,9 @@ export class WritersService {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
-          throw new BadRequestException(
+          throw new BadRequestException([
             'Writer with such name does not exist.',
-          );
+          ]);
         }
       }
 
@@ -240,14 +240,14 @@ export class WritersService {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
-          throw new BadRequestException(
+          throw new BadRequestException([
             'User with such username does not exist.',
-          );
+          ]);
         }
         if (e.code === 'P2016') {
-          throw new BadRequestException(
+          throw new BadRequestException([
             'Writer with such name does not exist.',
-          );
+          ]);
         }
       }
 
@@ -273,9 +273,9 @@ export class WritersService {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
-          throw new BadRequestException(
+          throw new BadRequestException([
             'Writer with such name does not exist.',
-          );
+          ]);
         }
       }
 

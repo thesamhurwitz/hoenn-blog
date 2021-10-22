@@ -59,9 +59,9 @@ export class CategoriesService {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
-          throw new BadRequestException(
+          throw new BadRequestException([
             'Category with such name (or slug) already exists.',
-          );
+          ]);
         }
       }
 
@@ -79,9 +79,9 @@ export class CategoriesService {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
-          throw new BadRequestException(
+          throw new BadRequestException([
             'Category with such slug does not exist.',
-          );
+          ]);
         }
       }
 

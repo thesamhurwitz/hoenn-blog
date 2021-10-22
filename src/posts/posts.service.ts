@@ -136,12 +136,12 @@ export class PostsService {
         if (e.code === 'P2025') {
           if (e.meta['cause'].includes('Writer')) {
             throw new BadRequestException(
-              'Writer with such id does not exist.',
+              ['Writer with such id does not exist.'],
             );
           } else if (e.meta['cause'].includes('records to be connected')) {
-            throw new BadRequestException(
+            throw new BadRequestException([
               'One or more categories listed do not exits.',
-            );
+            ]);
           }
           console.log(e);
         }
@@ -202,13 +202,13 @@ export class PostsService {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
           if (e.meta['cause'].includes('Writer')) {
-            throw new BadRequestException(
+            throw new BadRequestException([
               'Writer with such id does not exist.',
-            );
+            ]);
           } else if (e.meta['cause'].includes('records to be connected')) {
-            throw new BadRequestException(
+            throw new BadRequestException([
               'One or more categories listed do not exits.',
-            );
+            ]);
           }
           console.log(e);
         }
@@ -228,7 +228,7 @@ export class PostsService {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
-          throw new BadRequestException('Post with such id does not exist.');
+          throw new BadRequestException(['Post with such id does not exist.']);
         }
       }
 

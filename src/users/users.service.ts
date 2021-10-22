@@ -135,12 +135,14 @@ export class UsersService {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
-          throw new BadRequestException(
+          throw new BadRequestException([
             'User with such username does not exist.',
-          );
+          ]);
         }
         if (e.code === 'P2002') {
-          throw new BadRequestException('User with such email already exists.');
+          throw new BadRequestException([
+            'User with such email already exists.',
+          ]);
         }
       }
 
@@ -161,9 +163,9 @@ export class UsersService {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
-          throw new BadRequestException(
+          throw new BadRequestException([
             'User with such username does not exist.',
-          );
+          ]);
         }
       }
 
@@ -197,9 +199,9 @@ export class UsersService {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
-          throw new BadRequestException(
+          throw new BadRequestException([
             'User with such username does not exist.',
-          );
+          ]);
         }
       }
 
