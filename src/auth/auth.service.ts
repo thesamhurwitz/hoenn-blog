@@ -37,9 +37,9 @@ export class AuthService {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
-          throw new BadRequestException(
+          throw new BadRequestException([
             'User with such username or email already exists.',
-          );
+          ]);
         }
       }
 
@@ -55,13 +55,13 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new UnauthorizedException(
+      throw new UnauthorizedException([
         'User with such username does not exist.',
-      );
+      ]);
     }
 
     if (!(await this.validateHash(password, user.hash))) {
-      throw new UnauthorizedException('Wrong password.');
+      throw new UnauthorizedException(['Wrong password.']);
     }
 
     const { hash, ...result } = user;
