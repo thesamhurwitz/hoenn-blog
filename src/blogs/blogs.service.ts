@@ -5,19 +5,19 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { Prisma } from '@prisma/client';
-import { CreateWriterDto } from './dto/create-writer.dto';
-import { PatchWriterDto } from './dto/patch-writer.dto';
+import { CreateBlogDto } from './dto/create-blog.dto';
+import { PatchBlogDto } from './dto/patch-blog.dto';
 import { FindAllQuery } from 'src/common/query/find-all.query';
-import { PutWriterEditorDto } from './dto/put-editor.dto';
+import { PutBlogEditorDto } from './dto/put-blog.dto';
 
 @Injectable()
-export class WritersService {
+export class BlogsService {
   constructor(private prisma: PrismaService) {}
 
   async findAll(params: { skip?: number; take?: number }) {
     const { skip, take } = params;
 
-    return this.prisma.writer.findMany({
+    return this.prisma.blog.findMany({
       skip,
       take,
       select: {
@@ -32,7 +32,7 @@ export class WritersService {
   }
 
   async findOne(name: string) {
-    const writer = await this.prisma.writer.findUnique({
+    const blog = await this.prisma.blog.findUnique({
       where: {
         name,
       },
@@ -46,19 +46,19 @@ export class WritersService {
       },
     });
 
-    if (!writer) {
+    if (!blog) {
       throw new NotFoundException();
     }
 
-    return writer;
+    return blog;
   }
 
-  async create(createWriterDto: CreateWriterDto) {
+  async create(createBlogDto: CreateBlogDto) {
     try {
-      return await this.prisma.writer.create({
+      return await this.prisma.blog.create({
         data: {
-          name: createWriterDto.name,
-          displayName: createWriterDto.displayName,
+          name: createBlogDto.name,
+          displayName: createBlogDto.displayName,
         },
         select: {
           id: true,
@@ -73,7 +73,7 @@ export class WritersService {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
           throw new BadRequestException([
-            'Writer with such name already exists.',
+            'Blog with such name already exists.',
           ]);
         }
       }
@@ -82,15 +82,15 @@ export class WritersService {
     }
   }
 
-  async patch(name: string, patchWriterDto: PatchWriterDto) {
+  async patch(name: string, patchBlogDto: PatchBlogDto) {
     try {
-      return await this.prisma.writer.update({
+      return await this.prisma.blog.update({
         where: {
           name,
         },
         data: {
-          displayName: patchWriterDto.displayName,
-          type: patchWriterDto.type,
+          displayName: patchBlogDto.displayName,
+          type: patchBlogDto.type,
         },
         select: {
           id: true,
@@ -105,7 +105,7 @@ export class WritersService {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
           throw new BadRequestException([
-            'Writer with such name does not exist.',
+            'Blog with such name does not exist.',
           ]);
         }
       }
@@ -116,7 +116,7 @@ export class WritersService {
 
   async delete(name: string) {
     try {
-      return await this.prisma.writer.delete({
+      return await this.prisma.blog.delete({
         where: {
           name,
         },
@@ -125,7 +125,7 @@ export class WritersService {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
           throw new BadRequestException([
-            'Writer with such name does not exist.',
+            'Blog with such name does not exist.',
           ]);
         }
       }
@@ -137,7 +137,7 @@ export class WritersService {
   async findAllPosts(name: string, { take, skip }: FindAllQuery) {
     return this.prisma.post.findMany({
       where: {
-        writer: {
+        blog: {
           name,
         },
       },
@@ -158,7 +158,7 @@ export class WritersService {
 
   async findAllEditors(name: string, { take, skip }: FindAllQuery) {
     try {
-      const writer = await this.prisma.writer.findUnique({
+      const blog = await this.prisma.blog.findUnique({
         where: {
           name,
         },
@@ -178,16 +178,16 @@ export class WritersService {
         },
       });
 
-      if (!writer) {
+      if (!blog) {
         throw new NotFoundException();
       }
 
-      return writer.users;
+      return blog.users;
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
           throw new BadRequestException([
-            'Writer with such name does not exist.',
+            'Blog with such name does not exist.',
           ]);
         }
       }
@@ -197,7 +197,7 @@ export class WritersService {
   }
 
   async checkUserMembership(name: string, username: string) {
-    const writer = await this.prisma.writer.findFirst({
+    const blog = await this.prisma.blog.findFirst({
       where: {
         name,
         users: {
@@ -216,16 +216,16 @@ export class WritersService {
       },
     });
 
-    if (!writer) {
+    if (!blog) {
       throw new NotFoundException();
     }
 
-    return writer;
+    return blog;
   }
 
-  async putEditor(name: string, putEditorDtp: PutWriterEditorDto) {
+  async putEditor(name: string, putEditorDtp: PutBlogEditorDto) {
     try {
-      await this.prisma.writer.update({
+      await this.prisma.blog.update({
         where: {
           name,
         },
@@ -246,7 +246,7 @@ export class WritersService {
         }
         if (e.code === 'P2016') {
           throw new BadRequestException([
-            'Writer with such name does not exist.',
+            'Blog with such name does not exist.',
           ]);
         }
       }
@@ -258,7 +258,7 @@ export class WritersService {
   async deleteEditor(name: string, username: string) {
     // TODO: throw if username didn't exist
     try {
-      await this.prisma.writer.update({
+      await this.prisma.blog.update({
         where: {
           name,
         },
@@ -274,7 +274,7 @@ export class WritersService {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
           throw new BadRequestException([
-            'Writer with such name does not exist.',
+            'Blog with such name does not exist.',
           ]);
         }
       }

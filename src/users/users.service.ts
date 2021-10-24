@@ -173,7 +173,7 @@ export class UsersService {
     }
   }
 
-  async findAllUserWriters(username: string, { take, skip }: FindAllQuery) {
+  async findAllUserBlogs(username: string, { take, skip }: FindAllQuery) {
     try {
       return (
         await this.prisma.user.findUnique({
@@ -181,7 +181,7 @@ export class UsersService {
             username,
           },
           select: {
-            writers: {
+            blogs: {
               select: {
                 id: true,
                 name: true,
@@ -195,7 +195,7 @@ export class UsersService {
             },
           },
         })
-      ).writers;
+      ).blogs;
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
@@ -209,13 +209,13 @@ export class UsersService {
     }
   }
 
-  async checkUserMembership(username: string, writerName: string) {
+  async checkUserMembership(username: string, blogName: string) {
     const user = await this.prisma.user.findFirst({
       where: {
         username,
-        writers: {
+        blogs: {
           some: {
-            name: writerName,
+            name: blogName,
           },
         },
       },
