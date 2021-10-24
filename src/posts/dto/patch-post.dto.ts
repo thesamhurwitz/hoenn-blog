@@ -38,7 +38,7 @@ export class PatchPostDto {
   })
   @IsString()
   @IsOptional()
-  readonly writer?: string;
+  readonly blog?: string;
 
   @ApiProperty({
     required: false,

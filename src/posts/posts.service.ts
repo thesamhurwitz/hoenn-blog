@@ -36,7 +36,7 @@ export class PostsService {
         createdAt: true,
         updatedAt: true,
         published: true,
-        writer: {
+        blog: {
           select: {
             id: true,
             name: true,
@@ -66,7 +66,7 @@ export class PostsService {
         updatedAt: true,
         published: true,
         content: true,
-        writer: {
+        blog: {
           select: {
             id: true,
             name: true,
@@ -96,9 +96,9 @@ export class PostsService {
         data: {
           content: createPostDto.content,
           title: createPostDto.title,
-          writer: {
+          blog: {
             connect: {
-              name: createPostDto.writer,
+              name: createPostDto.blog,
             },
           },
           categories: createPostDto.categories
@@ -115,7 +115,7 @@ export class PostsService {
           published: true,
           createdAt: true,
           updatedAt: true,
-          writer: {
+          blog: {
             select: {
               id: true,
               name: true,
@@ -134,9 +134,9 @@ export class PostsService {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
-          if (e.meta['cause'].includes('Writer')) {
+          if (e.meta['cause'].includes('Blog')) {
             throw new BadRequestException(
-              ['Writer with such id does not exist.'],
+              ['Blog with such id does not exist.'],
             );
           } else if (e.meta['cause'].includes('records to be connected')) {
             throw new BadRequestException([
@@ -161,10 +161,10 @@ export class PostsService {
           title: patchPostDto.title,
           content: patchPostDto.content,
           published: patchPostDto.published,
-          writer: patchPostDto.writer
+          blog: patchPostDto.blog
             ? {
                 connect: {
-                  name: patchPostDto.writer,
+                  name: patchPostDto.blog,
                 },
               }
             : undefined,
@@ -182,7 +182,7 @@ export class PostsService {
           published: true,
           createdAt: true,
           updatedAt: true,
-          writer: {
+          blog: {
             select: {
               id: true,
               name: true,
@@ -201,9 +201,9 @@ export class PostsService {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
-          if (e.meta['cause'].includes('Writer')) {
+          if (e.meta['cause'].includes('Blog')) {
             throw new BadRequestException([
-              'Writer with such id does not exist.',
+              'Blog with such id does not exist.',
             ]);
           } else if (e.meta['cause'].includes('records to be connected')) {
             throw new BadRequestException([

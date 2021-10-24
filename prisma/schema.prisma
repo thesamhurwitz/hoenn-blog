@@ -19,7 +19,7 @@ model User {
 
   hash String
 
-  writers Writer[] @relation(references: [id])
+  blogs Blog[] @relation(references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -27,11 +27,11 @@ model User {
   @@index([username])
 }
 
-model Writer {
+model Blog {
   id          Int           @id @default(autoincrement())
   name        String        @unique
   displayName String
-  type        WriterType @default(PERSONAL)
+  type        BlogType @default(PERSONAL)
 
   users User[] @relation(references: [id])
 
@@ -50,8 +50,8 @@ model Post {
 
   content String
 
-  writer Writer @relation(fields: [writerId], references: [id])
-  writerId  Int
+  blog Blog @relation(fields: [blogId], references: [id])
+  blogId  Int
 
   categories Category[] @relation(references: [id])
 
@@ -85,7 +85,7 @@ enum Role {
   ADMIN
 }
 
-enum WriterType {
+enum BlogType {
   PERSONAL
   ORGANIZATION
 }
